@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEBSPACES</title>
+    <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-database.js"></script>
+    <script src="server.js"></script>
+    <script src="main.js"></script>
+    <style>
+        body {
+            background: #0e1116;
+            color: aliceblue;
+        }
+
+        #editBox{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000000aa;
+            z-index: 100;
+            visibility: hidden;
+        }
+
+        section {
+            padding-bottom: 10px;
+            margin-top: 5px;
+        }
+
+        .hex-grid {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 110px);
+            gap: 0px;
+            margin-bottom: -50px;
+        }
+
+        .hex {
+            position: relative;
+            width: 100px;
+            aspect-ratio: 1.154;
+            background: #454545;
+            clip-path: polygon(25% 6.7%,
+                    75% 6.7%,
+                    100% 50%,
+                    75% 93.3%,
+                    25% 93.3%,
+                    0% 50%);
+            margin-right: -100px;
+            cursor: pointer;
+        }
+
+        .hex-inner {
+            width: 96%;
+            height: 96%;
+            margin: 2%;
+            background: #888888;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: 0.3s;
+            clip-path: polygon(25% 6.7%,
+                    75% 6.7%,
+                    100% 50%,
+                    75% 93.3%,
+                    25% 93.3%,
+                    0% 50%);
+        }
+
+        .hex:nth-child(odd) {
+            margin-top: 50px;
+        }
+
+        .hex-inner img{
+            width: 80%;
+        }
+
+        #searcher button,
+        #searcher input {
+            background-color: #888888;
+            margin: 0px;
+            color: aliceblue;
+            border: outset black 3px;
+            cursor: pointer;
+        }
+
+        #searcher input {
+            height: 20px;
+            width: 40%;
+        }
+
+        #searcher button {
+            height: 26px;
+            width: 26px;
+        }
+
+        #searcher {
+            text-align: center;
+        }
+
+        #space-name {
+            float: right;
+            color: aqua;
+            margin-right: 8px;
+        }
+
+        #space-name:hover {
+            color: red;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        #editor{
+            width: 80%;
+            height: 80%;
+            margin-left: 10%;
+            margin-top: 2%;
+            background-color: #454545;
+            border: 2px white solid;
+            border-radius: 15px;
+            padding: 1%;
+            text-align: center;
+        }
+
+        #editor button{
+            width: 80%;
+            margin: 2%;
+        }
+
+        #editBox button:hover{
+            text-shadow: 1px 1px 1px aliceblue;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #ehexdats a{
+            color: aqua;
+        }
+    </style>
+</head>
+
+<body onload="loadWebspaceData()">
+    <div id="editBox">
+        <button style="color: white;background-color: #00000000;border-color: #00000000;" onclick="closeEditor()">X</button>
+        <div id="editor">
+            <label id="ehexs"></label>
+            <hr>
+            <button style="color: white;background-color: green;" onclick="openAllHex()">Open</button>
+            <button style="color: white;background-color: gray;" onclick="readAllHex()">Data</button>
+            <button style="color: white;background-color: red;" onclick="deleteHex()">Delete</button>
+            <hr>
+            <span id="ehexdats"></span>
+        </div>
+    </div>
+    <section id="menu" style="border-bottom: 1px gray solid;">
+        <label>WEBSPACE</label>
+        <label id="space-name" onclick="logout()"></label>
+        <div id="searcher">
+            <input id="linkin" placeholder="URL">
+            <button onclick="addLink()">+</button>
+            <button onclick="goLink()">↗</button>
+        </div>
+    </section>
+    <center>
+        <section id="webspace"></section>
+    </center>
+</body>
+
+</html>

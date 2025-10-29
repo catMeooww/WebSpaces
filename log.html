@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEBSPACES</title>
+    <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-database.js"></script>
+    <script src="server.js"></script>
+    <style>
+        body {
+            background: linear-gradient(black 0%, rgb(25, 0, 58) 50%, black 100%);
+            text-align: center;
+        }
+
+        div {
+            background-color: aliceblue;
+            width: 50%;
+            margin-left: 25%;
+            margin-top: 10%;
+            padding: 10px;
+            border: 3px blue solid;
+            border-radius: 20px;
+        }
+
+        span {
+            display: block;
+            font-weight: bold;
+        }
+
+        #footer {
+            color: blueviolet;
+            margin-top: 10%;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1>Log in your WebSpace!</h1>
+        <hr>
+        <span>
+            <label>Space Code:</label>
+            <input id="space-code">
+        </span>
+        <br>
+        <span>
+            <label>Password:</label>
+            <input id="space-pass">
+        </span>
+        <br>
+        <button onclick="logSpace()">Enter WebSpace</button>
+        <hr>
+        <b id="login-error"></b>
+        <p>Don't have one? <a href="create.html">Create your WebSpace</a></p>
+    </div>
+    <p id="footer">By CatMeooww</p>
+</body>
+
+</html>
