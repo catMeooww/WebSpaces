@@ -32,7 +32,7 @@ function logSpace() {
                         if (canPass == passwordinput) {
                             localStorage.setItem("webspace", spaceinput);
                             localStorage.setItem("spacepass", passwordinput);
-                            window.location = "/";
+                            window.location = "index.html";
                         } else {
                             document.getElementById("login-error").innerHTML = "Incorrect Password";
                             document.getElementById("space-pass").style.borderColor = "red";
@@ -120,5 +120,5 @@ function loadWebspaceData() {
 function logout(){
     localStorage.removeItem("webspace");
     localStorage.removeItem("spacepass");
-    window.location = "/";
+    window.location = "index.html";
 }
