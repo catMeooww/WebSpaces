@@ -120,5 +120,5 @@ function loadWebspaceData() {
 function logout(){
     localStorage.removeItem("webspace");
     localStorage.removeItem("spacepass");
-    window.location = "index.html";
+    window.location = "log.html";
 }
