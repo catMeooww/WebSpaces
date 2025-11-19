@@ -9,13 +9,16 @@
     <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-database.js"></script>
     <script src="server.js"></script>
     <script src="main.js"></script>
+    <link rel="shortcut icon" href="icon.png" type="image/x-png">
     <style>
         body {
             background: #0e1116;
             color: aliceblue;
+            margin: 0px;
         }
 
-        #editBox{
+        #editBox,
+        #configBox {
             position: fixed;
             top: 0;
             left: 0;
@@ -77,8 +80,24 @@
             margin-top: 50px;
         }
 
-        .hex-inner img{
+        .hex-icon {
             width: 80%;
+        }
+
+        #menu {
+            border-bottom: 1px gray solid;
+            background-color: #000000;
+            padding: 10px;
+            margin-top: 0px;
+            margin-bottom: 10px;
+        }
+
+        #webspace {
+            padding: 10px;
+        }
+
+        #container {
+            background-color: rgba(0,0,0,0.5);
         }
 
         #searcher button,
@@ -116,7 +135,8 @@
             cursor: pointer;
         }
 
-        #editor{
+        #editor,
+        #configs {
             width: 80%;
             height: 80%;
             margin-left: 10%;
@@ -128,26 +148,52 @@
             text-align: center;
         }
 
-        #editor button{
+        #editor button,
+        #configs button {
             width: 80%;
             margin: 2%;
         }
 
-        #editBox button:hover{
+        #editBox button:hover,
+        #configBox button:hover {
             text-shadow: 1px 1px 1px aliceblue;
             cursor: pointer;
             font-size: 16px;
         }
 
-        #ehexdats a{
+        #ehexdats a {
             color: aqua;
         }
     </style>
 </head>
 
 <body onload="loadWebspaceData()">
+    <div id="configBox">
+        <button style="color: white;background-color: #00000000;border-color: #00000000;"
+            onclick="closeConfigs()">X</button>
+        <div id="configs">
+            <section>
+                <h3>Hexagons:</h3>
+                <label>Inner:</label><input type="color" value="#888888" id="innerColSelector">
+                <labe>Border:</labe><input type="color" value="#454545" id="hexColSelector">
+                <labe>Opacity:</labe><input type="number" value="90" id="hexOpacitySelector">
+            </section>
+            <section>
+                <h3>Background:</h3>
+                <label>Color or Image URL:</label><input type="text" value="black" id="bgSelector">
+                <label>Webspace Opacity:</label><input type="number" value="50" id="bgOpacitySelector">
+            </section>
+            <section>
+                <h3>Images:</h3>
+                <label>Icons Size:</label><input type="number" value="80" id="iconSizeSelector">
+            </section>
+            <button style="color: white;background-color: green;" onclick="saveConfigs()">Save</button>
+            <button style="color: white;background-color: gray;" onclick="restoreConfigs()">Restore</button>
+        </div>
+    </div>
     <div id="editBox">
-        <button style="color: white;background-color: #00000000;border-color: #00000000;" onclick="closeEditor()">X</button>
+        <button style="color: white;background-color: #00000000;border-color: #00000000;"
+            onclick="closeEditor()">X</button>
         <div id="editor">
             <label id="ehexs"></label>
             <hr>
@@ -158,8 +204,9 @@
             <span id="ehexdats"></span>
         </div>
     </div>
-    <section id="menu" style="border-bottom: 1px gray solid;">
+    <section id="menu">
         <label>WEBSPACE</label>
+        <button style="background-color: #00000000;float: right;cursor: pointer;" onclick="openConfigs()">⚙️</button>
         <label id="space-name" onclick="logout()"></label>
         <div id="searcher">
             <input id="linkin" placeholder="URL">
@@ -167,9 +214,12 @@
             <button onclick="goLink()">↗</button>
         </div>
     </section>
-    <center>
-        <section id="webspace"></section>
-    </center>
+    <div id="container">
+        <center>
+            <section id="webspace"></section>
+            <p id="selection-name" style="margin: 50px;padding: 10px;">-</p>
+        </center>
+    </div>
 </body>
 
 </html>

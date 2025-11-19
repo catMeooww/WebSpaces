@@ -68,7 +68,17 @@ function createSpace() {
                         status: "created",
                         grid:[
                             "","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""
-                        ]
+                        ],
+                        config:{
+                            "hexcolors":{
+                                "main":'#454545',
+                                "inner":'#888888',
+                                "opacity":0.9
+                            },
+                            "background":'black',
+                            "webspace_bg":0.5,
+                            "iconsize":80
+                        }
                     });
                     window.location = "log.html";
                 } else {

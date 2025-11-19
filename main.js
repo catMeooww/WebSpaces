@@ -1,3 +1,6 @@
+let hexcolor = "";
+let innerhexcolor = "";
+
 //loading webspace
 totalHex = 48;
 hexCount = 0;
@@ -16,6 +19,7 @@ function loadWebSpace() {
         }
     }
     hexData();
+    loadConfig();
 }
 
 //loadDatabase
@@ -24,7 +28,7 @@ function hexData() {
         snapshot.forEach(function (childSnapshot) {
             childKey = childSnapshot.key; childData = childSnapshot.val();
             if (childData != "") {
-                document.getElementById("innerhex" + childKey).innerHTML = "<img src='https://www.google.com/s2/favicons?sz=128&domain=" + childData + "' draggable='false'>";
+                document.getElementById("innerhex" + childKey).innerHTML = "<img class='hex-icon' src='https://www.google.com/s2/favicons?sz=128&domain=" + childData + "' draggable='false'>";
             } else {
                 document.getElementById("innerhex" + childKey).innerHTML = "";
             }
@@ -33,6 +37,74 @@ function hexData() {
     });
 }
 
+function hexToRgb(hex) {
+    hex = hex.startsWith('#') ? hex.slice(1) : hex;
+
+    if (hex.length === 3) {
+        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    }
+
+    if (!/^[0-9A-Fa-f]{6}$/.test(hex)) {
+        throw new Error("Invalid hex color format.");
+    }
+
+    r = parseInt(hex.substring(0, 2), 16);
+    g = parseInt(hex.substring(2, 4), 16);
+    b = parseInt(hex.substring(4, 6), 16);
+
+    return [r, g, b];
+}
+
+function loadConfig() {
+    firebase.database().ref(webspace + "/config/background/").on("value", data => {
+        bg = data.val();
+        document.getElementById("bgSelector").value = bg;
+        if (bg.startsWith("data:image")||bg.startsWith("http")) {
+            document.body.style.background = "url(" + bg + ")";
+            document.body.style.backgroundRepeat = "no-repeat";
+            document.body.style.backgroundSize = "cover";
+        } else {
+            document.body.style.background = bg;
+        }
+    })
+    firebase.database().ref(webspace + "/config/webspace_bg/").on("value", data => {
+        spacebg = data.val();
+        document.getElementById("bgOpacitySelector").value = spacebg*100;
+        document.getElementById("container").style.background = "rgba(0,0,0,"+spacebg+")";
+    })
+    firebase.database().ref(webspace + "/config/iconsize/").on("value", data => {
+        size = data.val();
+        document.getElementById("iconSizeSelector").value = size;
+        for (icon of document.getElementsByClassName("hex-icon")) {
+            icon.style.width = size + "%";
+        }
+    })
+    firebase.database().ref(webspace + "/config/hexcolors/").on("value", data => {
+        colors = data.val();
+        inner = colors["inner"];
+        border = colors["main"];
+        opacity = colors["opacity"];
+        document.getElementById("hexColSelector").value = border;
+        document.getElementById("innerColSelector").value = inner;
+        document.getElementById("hexOpacitySelector").value = opacity*100;
+        for (hex of document.getElementsByClassName("hex")) {
+            color = hexToRgb(border);
+            r = color[0];
+            g = color[1];
+            b = color[2];
+            hexcolor = "rgba("+r+","+g+","+b+","+opacity+")";
+            hex.style.backgroundColor = hexcolor;
+        }
+        for (innerhex of document.getElementsByClassName("hex-inner")) {
+            color = hexToRgb(inner);
+            r = color[0];
+            g = color[1];
+            b = color[2];
+            innerhexcolor = "rgba("+r+","+g+","+b+","+opacity+")"
+            innerhex.style.backgroundColor = innerhexcolor;
+        }
+    })
+}
 
 //management
 keyPressed = [];
@@ -75,7 +147,7 @@ function selecthex(hex) {
         if (selected.includes(hexs.id)) {
             hexs.style.backgroundColor = "lime";
         } else {
-            hexs.style.backgroundColor = "#454545";
+            hexs.style.backgroundColor = hexcolor;
         }
     }
 }
@@ -85,12 +157,20 @@ function enterhex(hex) {
     if (!(selected.includes(hex))) {
         document.getElementById(hex).style.backgroundColor = "white";
     }
+    isread = false
+    firebase.database().ref(webspace + "/grid/" + hex.replace('hex', '')).on("value", data => {
+        if (!isread) {
+            isread = true;
+            read = data.val().replace("www.","").replace(".com","").replace(".net","").replace(".org","").replace(".io","").replace(".html","")
+            document.getElementById("selection-name").innerHTML = read;
+        }
+    })
 }
 
 function leavehex(hex) {
     hovered = "";
     if (!(selected.includes(hex))) {
-        document.getElementById(hex).style.backgroundColor = "#454545";
+        document.getElementById(hex).style.backgroundColor = hexcolor;
     }
 }
 
@@ -169,6 +249,14 @@ function closeEditor() {
     document.getElementById("editBox").style.visibility = "hidden";
 }
 
+function closeConfigs() {
+    document.getElementById("configBox").style.visibility = "hidden";
+}
+
+function openConfigs() {
+    document.getElementById("configBox").style.visibility = "visible";
+}
+
 function openAllHex() {
     opened = false;
     firebase.database().ref(webspace + "/grid/").on('value', function (snapshot) {
@@ -209,5 +297,41 @@ function deleteHex() {
             });
         }
         closeEditor();
+    }
+}
+
+function saveConfigs() {
+    hexInnerColor = document.getElementById("innerColSelector").value;
+    hexMainColor = document.getElementById("hexColSelector").value;
+    hexOpacity = document.getElementById("hexOpacitySelector").value;
+    bgData = document.getElementById("bgSelector").value;
+    bgOpData = document.getElementById("bgOpacitySelector").value;
+    iconData = document.getElementById("iconSizeSelector").value;
+    if (!(hexInnerColor == "" || hexMainColor == "" || bgData == "" || iconData == "")) {
+        firebase.database().ref(webspace + "/config/").update({
+            hexcolors: {
+                "main": hexMainColor,
+                "inner": hexInnerColor,
+                "opacity": (Number(hexOpacity) / 100)
+            },
+            background: bgData,
+            webspace_bg:(Number(bgOpData) / 100),
+            iconsize: Number(iconData)
+        });
+    }
+}
+
+function restoreConfigs() {
+    if (confirm("Restore original configuration?")) {
+        firebase.database().ref(webspace + "/config/").update({
+            hexcolors: {
+                "main": '#454545',
+                "inner": '#888888',
+                "opacity": 0.9
+            },
+            background: "black",
+            webspace_bg:0.5,
+            iconsize: 80
+        });
     }
 }
