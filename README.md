@@ -9,3 +9,9 @@ A WebSite to organize WebSites you access
 - LEFT CLICK in a Hexagon to select it, double click to open
 - use CTRL to select more than 1 hex
 - use RIGHT CLICK to see hex data
+## Customizing
+- Click in the config button
+- customize hexagons color
+- customize icon size
+- customize background color
+- customize opacity
