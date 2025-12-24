@@ -164,6 +164,12 @@
         #ehexdats a {
             color: aqua;
         }
+
+        #previewer iframe{
+            background-color: #000000aa;
+            width: 80%;
+            height: 400px;
+        }
     </style>
 </head>
 
@@ -186,6 +192,10 @@
             <section>
                 <h3>Images:</h3>
                 <label>Icons Size:</label><input type="number" value="80" id="iconSizeSelector">
+            </section>
+            <section>
+                <h3>Page Preview: </h3>
+                <label>Show Preview:</label><input type="checkbox" id="previewerSelector">
             </section>
             <button style="color: white;background-color: green;" onclick="saveConfigs()">Save</button>
             <button style="color: white;background-color: gray;" onclick="restoreConfigs()">Restore</button>
@@ -217,9 +227,11 @@
     <div id="container">
         <center>
             <section id="webspace"></section>
-            <p id="selection-name" style="margin: 50px;padding: 10px;">-</p>
+            <p id="selection-name" style="padding: 10px;position: fixed;bottom: 0px;left: 2%;background-color: #000000aa;"></p>
         </center>
     </div>
+    <br><br><br>
+    <div id="previewer" style="text-align: center;"></div>
 </body>
 
 </html>

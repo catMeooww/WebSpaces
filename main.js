@@ -1,5 +1,6 @@
 let hexcolor = "";
 let innerhexcolor = "";
+showPreviewer = false;
 
 //loading webspace
 totalHex = 48;
@@ -104,6 +105,10 @@ function loadConfig() {
             innerhex.style.backgroundColor = innerhexcolor;
         }
     })
+    firebase.database().ref(webspace + "/config/previewer/").on("value", data => {
+        showPreviewer = data.val();
+        document.getElementById("previewerSelector").checked = showPreviewer;
+    })
 }
 
 //management
@@ -161,8 +166,14 @@ function enterhex(hex) {
     firebase.database().ref(webspace + "/grid/" + hex.replace('hex', '')).on("value", data => {
         if (!isread) {
             isread = true;
-            read = data.val().replace("www.","").replace(".com","").replace(".net","").replace(".org","").replace(".io","").replace(".html","")
-            document.getElementById("selection-name").innerHTML = read;
+            read = data.val();
+            attached = read.replace("www.","").replace(".com","").replace(".net","").replace(".org","").replace(".io","").replace(".html","")
+            document.getElementById("selection-name").innerHTML = attached;
+            if(showPreviewer){
+                document.getElementById("previewer").innerHTML = "<iframe src='https://"+read+"'></iframe>";
+            }else{
+                document.getElementById("previewer").innerHTML = "";
+            }
         }
     })
 }
@@ -307,6 +318,7 @@ function saveConfigs() {
     bgData = document.getElementById("bgSelector").value;
     bgOpData = document.getElementById("bgOpacitySelector").value;
     iconData = document.getElementById("iconSizeSelector").value;
+    previewerData = document.getElementById("previewerSelector").checked;
     if (!(hexInnerColor == "" || hexMainColor == "" || bgData == "" || iconData == "")) {
         firebase.database().ref(webspace + "/config/").update({
             hexcolors: {
@@ -316,7 +328,8 @@ function saveConfigs() {
             },
             background: bgData,
             webspace_bg:(Number(bgOpData) / 100),
-            iconsize: Number(iconData)
+            iconsize: Number(iconData),
+            previewer: previewerData
         });
     }
 }
@@ -331,7 +344,8 @@ function restoreConfigs() {
             },
             background: "black",
             webspace_bg:0.5,
-            iconsize: 80
+            iconsize: 80,
+            previewer: false
         });
     }
 }
